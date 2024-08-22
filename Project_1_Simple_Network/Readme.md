@@ -1,3 +1,5 @@
+![Screenshot](https://github.com/milanalay/Cisco-Packet-Tracer-Lab-Projects/blob/main/Project_1_Simple_Network/Screenshot%202024-08-22%20at%209.22.02%20pm.png)
+
 # Design and Implementation of a Simple Networking Project
 
 ## Design a network in Cisco Packet Tracer to connects ACCOUNTS and DELIVERY departments through the following:
