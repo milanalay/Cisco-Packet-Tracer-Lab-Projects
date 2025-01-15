@@ -1,3 +1,5 @@
+![Screenshot](https://github.com/milanalay/Cisco-Packet-Tracer-Lab-Projects/blob/main/Project_3_Hotel_System_Network/Screenshot%202024-08-22%20at%2010.18.44%20pm.png)
+
 # Design and Implementation of an Hotel System Network Design
 
 ## Project 3 Case Study and Requirements

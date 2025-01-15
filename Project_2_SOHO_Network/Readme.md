@@ -1,3 +1,5 @@
+![Screenchot](https://github.com/milanalay/Cisco-Packet-Tracer-Lab-Projects/blob/main/Project_2_SOHO_Network/Screenshot%202024-08-22%20at%2010.17.09%20pm.png)
+
 # Design and Implementation of a Small Office Home Office Network -SOHO
 
 ## Project 2 Case Study and Requirements

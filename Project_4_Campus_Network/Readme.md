@@ -1,3 +1,5 @@
+![Screenshot](https://github.com/milanalay/Cisco-Packet-Tracer-Lab-Projects/blob/main/Project_4_Campus_Network/Screenshot%202024-08-23%20at%201.46.30%20am.png)
+
 # Design and Implementation of a Campus/University System Network Design 
 
 ## Project #4 Case Study and Requirements
