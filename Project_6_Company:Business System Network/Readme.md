@@ -1,4 +1,4 @@
-
+![Screenshot](https://github.com/milanalay/Cisco-Packet-Tracer-Lab-Projects/blob/main/Project_6_Company%3ABusiness%20System%20Network/Screenshot%202025-01-19%20at%201.01.32%20am.png)
 
 # Design and Implementation of a Company/Business System Network
 

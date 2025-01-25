@@ -46,3 +46,237 @@
     14. Configuring Routing for VoIP or Dial peering configuration in all routers.
     15. Host Device Configurations.
     16. Test and Verifying Network Communication.
+
+
+#### CONFIG STEPS
+
+    1. Configure Basic Settings to all devices plus ssh on the routers
+        // For L2 Switch
+        en
+        conf t
+        hostname ServerRoom-SW
+        enable password cisco
+        banner motd #No Unauthorised Access!!!#
+        no ip domain lookup
+        line console 0
+        password cisco
+        login
+        exit
+        service password-encryption
+        do wr
+
+        // For Routers
+        en
+        conf t
+        hostname ICT-Router
+        enable password cisco
+        banner motd #No Unauthorised Access!!!#
+        no ip domain lookup
+        line console 0
+        password cisco
+        login
+        exit
+        service password-encryption
+
+        ip domain name cisco.net
+        username admin password cisco
+        crypto key generate rsa general-keys modulus 1024
+        ip ssh version 2
+        line vty 0 15
+        login local
+        transport input ssh
+        exit
+        do wr
+
+
+    2. VLANs assignment plus all access and trunk ports on the switches.
+
+        // For L2 Switches
+        vlan 40
+        name DATA
+        exit
+        vlan 100
+        name VOICE
+        exit
+
+        int  fa0/1
+        switchport mode trunk
+        exit
+
+        int range fa0/2-24
+        switchport mode access
+        switchport access vlan 40
+        switchport voice vlan 100
+        exit
+
+        do wr
+
+
+    3. Configure DHCP for Voice on Routers
+
+        service dhcp
+        ip dhcp excluded-address 172.16.100.1	(default gateway for voice network)
+        ip dhcp pool FinanceVoice
+        network 172.16.100.0 255.255.255.224
+        default-router 172.16.100.1
+        option 150 ip 172.16.100.1
+        exit
+
+        do wr
+
+
+    4. Configure OSPF on routers
+
+        // For Core-Routers
+        router ospf 10
+        network 10.10.10.8 0.0.0.3 area 0
+        network 10.10.10.12 0.0.0.3 area 0
+        network 192.168.100.64 0.0.0.31 area 0
+        network 172.16.100.64 0.0.0.31 area 0
+        exit
+
+        do wr
+
+
+    5. Inter-VLAN Routing on Routers plus ip dhcp helper address
+
+        // In case of L2 switch directly connected to the core router, to do inter-vlan routing we should create a sub-interface and make it the default gateway on the core router interface using encapsulation.
+        // For DATA in vlan 10
+        int fa0/0.40
+        encapsulation dot1Q 40
+        ip address 192.168.100.97 255.255.255.224
+        ip helper-address 192.168.100.130
+        exit
+
+        int fa0/0.100
+        encapsulation dot1Q 100
+        ip address 172.16.100.97 255.255.255.224
+        ex
+
+        int fa0/1.50
+        encapsulation dot1Q 50
+        ip address 192.168.100.129 255.255.255.248
+        exit
+
+        do wr
+
+
+    6. Configure VoIP configuration in all routers 
+
+        telephony-service
+        max-dn 20
+        max-ephones 20
+        ip source-address 172.16.100.97 port 2000
+        auto assign 1 to 20
+        exit 
+
+        ephone-dn 1
+        number 401
+        ephone-dn 2 
+        number 402
+        ephone-dn 3
+        number 403
+        ephone-dn 4
+        number 404
+        ephone-dn 5 
+        number 405
+        ephone-dn 6
+        number 406
+        ephone-dn 7
+        number 407
+        ephone-dn 8 
+        number 408
+        ephone-dn 9
+        number 409
+        ephone-dn 10
+        number 410
+
+        do wr
+
+
+    7. Dial Peering configuration in all routers
+    // For first router (Finance-Router) 
+        // Peering with HR-Router
+        dial-peer voice 1 voip			// 1 is the group number
+        destination-pattern 2..			// 2.. is the pattern such as line numbers of destination (201 - 299)
+        session target ipv4:10.10.10.2	// ip address could be any link within the routers (in this case serial ports connecting all the routers)
+        exit
+
+        // Peering with ICT-Router
+        dial-peer voice 2 voip
+        destination-pattern 4..
+        session target ipv4:10.10.10.6
+        exit
+
+        // Peering with Sales-Router
+        dial-peer voice 3 voip
+        destination-pattern 3..
+        session target ipv4:10.10.10.10
+        exit
+
+        do wr
+
+    // For HR-Router
+        // Peering with Finance-Router
+        dial-peer voice 1 voip
+        destination-pattern 1..
+        session target ipv4:10.10.10.1
+        exit
+
+        // Peering with Sales-Router
+        dial-peer voice 4 voip
+        destination-pattern 3..
+        session target ipv4:10.10.10.10
+        exit
+
+        // Peering with ICT-Router
+        dial-peer voice 5 voip
+        destination-pattern 4..
+        session target ipv4:10.10.10.14
+        exit
+
+        do wr
+
+
+    // For Sales Router
+        // Peering with Finance-Router
+        dial-peer voice 3 voip
+        destination-pattern 1..
+        session target ipv4:10.10.10.1
+        exit
+
+        // Peering with HR-Router
+        dial-peer voice 4 voip
+        destination-pattern 2..
+        session target ipv4:10.10.10.9
+        exit
+
+        // Peering with ICT-Router
+        dial-peer voice 6 voip
+        destination-pattern 4..
+        session target ipv4:10.10.10.14
+        exit
+
+        do wr
+
+
+    // For ICT Router
+        // Peering with Finance-Router
+        dial-peer voice 2 voip
+        destination-pattern 1..
+        session target ipv4:10.10.10.5
+        exit
+
+        // Peering with HR-Router
+        dial-peer voice 5 voip
+        destination-pattern 2..
+        session target ipv4:10.10.10.9
+        exit
+
+        // Peering with Sales-Router
+        dial-peer voice 6 voip
+        destination-pattern 3..
+        session target ipv4:10.10.10.13
+        exit
+
+        do wr

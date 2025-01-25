@@ -1,4 +1,4 @@
-
+![Screenshot](https://github.com/milanalay/Cisco-Packet-Tracer-Lab-Projects/blob/main/Project_7_Hospital_System_Network/Screenshot%202025-01-20%20at%202.29.38%20am.png)
 
 # Design and Implementation of a Hospital System Network
 
@@ -56,271 +56,266 @@
 
 #### CONFIG STEPS
     1. Configure Basic Settings to all devices plus ssh on the routers and L3 Switches
-
-    en
-    conf t
-    hostname SERVER-SW
-    enable password cisco
-    banner motd #No Unauthorised Access!!!#
-    no ip domain lookup
-    line console 0
-    password cisco
-    login
-    exit
-    service password-encryption
-    do wr
+    // For L2 Switches
+        en
+        conf t
+        hostname SERVER-SW
+        enable password cisco
+        banner motd #No Unauthorised Access!!!#
+        no ip domain lookup
+        line console 0
+        password cisco
+        login
+        exit
+        service password-encryption
+        do wr
 
     // For Routers and L3 Switches
-    en
-    conf t
-    hostname BR-Router
-    enable password cisco
-    banner motd #No Unauthorised Access!!!#
-    no ip domain lookup
-    line console 0
-    password cisco
-    login
-    exit
-    service password-encryption
+        en
+        conf t
+        hostname BR-Router
+        enable password cisco
+        banner motd #No Unauthorised Access!!!#
+        no ip domain lookup
+        line console 0
+        password cisco
+        login
+        exit
+        service password-encryption
 
-    ip domain name cisco.net
-    username admin password cisco
-    crypto key generate rsa
-    1024
-    line vty 0 15
-    login local
-    transport input ssh
-    exit
-    do wr
+        ip domain name cisco.net
+        username admin password cisco
+        crypto key generate rsa
+        1024
+        line vty 0 15
+        login local
+        transport input ssh
+        exit
+        do wr
 
     2. VLANs assignment plus all access and trunk ports on L2 and L3 switches.
-
     // For L2 Switches
-    vlan 130 
-    name BR_GWA
-    exit
+        vlan 130 
+        name BR_GWA
+        exit
 
-    int range fa0/1-2 
-    switchport mode trunk
-    exit
+        int range fa0/1-2 
+        switchport mode trunk
+        exit
 
-    int range fa0/3-24
-    switchport mode access
-    switchport access vlan 130
-    exit
+        int range fa0/3-24
+        switchport mode access
+        switchport access vlan 130
+        exit
 
-    do wr
+        do wr
 
     // For L3 Switches
-    vlan 80
-    vlan 90
-    vlan 100
-    vlan 110
-    vlan 120
-    vlan 130
-    exit
+        vlan 80
+        vlan 90
+        vlan 100
+        vlan 110
+        vlan 120
+        vlan 130
+        exit
 
-    int range gig1/0/2-7
-    switchport mode trunk
-    exit
+        int range gig1/0/2-7
+        switchport mode trunk
+        exit
 
-    do wr
+        do wr
 
     3. Switchport security to server-side site department
+        int range fa0/2-24
+        switchport port-security
+        switchport port-security maximum 1
+        switchport port-security mac-address sticky
+        switchport port-security violation shutdown
 
-    int range fa0/2-24
-    switchport port-security
-    switchport port-security maximum 1
-    switchport port-security mac-address sticky
-    switchport port-security violation shutdown
-
-    do sh port-security
+        do sh port-security
 
     4. Configure OSPF on routers and L3 switches.
-
     // For L3 Switches
-    ip routing
-    router ospf 10
-    network 192.168.101.128 0.0.0.31 area 0
-    network 192.168.101.160 0.0.0.31 area 0
-    network 192.168.101.192 0.0.0.31 area 0
-    network 192.168.101.224 0.0.0.31 area 0
-    network 192.168.102.0 0.0.0.31 area 0
-    network 192.168.102.32 0.0.0.31 area 0
-    network 192.168.102.92 0.0.0.3 area 0
-    exit
+        ip routing
+        router ospf 10
+        network 192.168.101.128 0.0.0.31 area 0
+        network 192.168.101.160 0.0.0.31 area 0
+        network 192.168.101.192 0.0.0.31 area 0
+        network 192.168.101.224 0.0.0.31 area 0
+        network 192.168.102.0 0.0.0.31 area 0
+        network 192.168.102.32 0.0.0.31 area 0
+        network 192.168.102.92 0.0.0.3 area 0
+        exit
 
     // Default Static Route / Next-Hop Routing
-    ip route 0.0.0.0 0.0.0.0 192.168.102.94
+        ip route 0.0.0.0 0.0.0.0 192.168.102.94
 
     // For Core-Routers
-    router ospf 10
-    network 192.168.102.80 0.0.0.3 area 0
-    network 192.168.102.84 0.0.0.3 area 0
-    network 192.168.102.96 0.0.0.3 area 0
-    network 195.136.17.0 0.0.0.3 area 0
-    network 195.136.17.4 0.0.0.3 area 0
-    network 192.168.102.64 0.0.0.15 area 0
-    exit
+        router ospf 10
+        network 192.168.102.80 0.0.0.3 area 0
+        network 192.168.102.84 0.0.0.3 area 0
+        network 192.168.102.96 0.0.0.3 area 0
+        network 195.136.17.0 0.0.0.3 area 0
+        network 195.136.17.4 0.0.0.3 area 0
+        network 192.168.102.64 0.0.0.15 area 0
+        exit
 
     // Default Static Route
-    ip route 0.0.0.0 0.0.0.0 195.136.17.2
-    ip route 0.0.0.0 0.0.0.0 195.136.17.6 70
-    do wr
+        ip route 0.0.0.0 0.0.0.0 195.136.17.2
+        ip route 0.0.0.0 0.0.0.0 195.136.17.6 70
+        do wr
 
     5. Inter-VLAN Routing on L3 Switches plus ip dhcp helper address
-    
     // In case of Server-Department, L2 switch is directly connected to the core router, so to do inter-vlan routing we should create a sub-interface for the server department of vlan 70 and make it the default gateway on the core router interface using encapsulation.
-    int gig0/2
-    no ip address
-    exit
-    int gig0/2.70
-    encapsulation dot1Q 70
-    ip address 192.168.102.65 255.255.255.240
-    ex
-    do wr
+        int gig0/2
+        no ip address
+        exit
+        int gig0/2.70
+        encapsulation dot1Q 70
+        ip address 192.168.102.65 255.255.255.240
+        ex
+        do wr
 
     // For L3 Switches
-    int vlan 80
-    ip address 192.168.101.129 255.255.255.224
-    ip helper-address 192.168.102.67
-    exit
+        int vlan 80
+        ip address 192.168.101.129 255.255.255.224
+        ip helper-address 192.168.102.67
+        exit
 
-    int vlan 90
-    ip address 192.168.101.161 255.255.255.224
-    ip helper-address 192.168.102.67
-    exit
+        int vlan 90
+        ip address 192.168.101.161 255.255.255.224
+        ip helper-address 192.168.102.67
+        exit
 
-    int vlan 100
-    ip address 192.168.101.193 255.255.255.224
-    ip helper-address 192.168.102.67
-    exit
+        int vlan 100
+        ip address 192.168.101.193 255.255.255.224
+        ip helper-address 192.168.102.67
+        exit
 
-    int vlan 110
-    ip address 192.168.101.225 255.255.255.224
-    ip helper-address 192.168.102.67
-    exit
+        int vlan 110
+        ip address 192.168.101.225 255.255.255.224
+        ip helper-address 192.168.102.67
+        exit
 
-    int vlan 120
-    ip address 192.168.102.1 255.255.255.224
-    ip helper-address 192.168.102.67
-    exit
+        int vlan 120
+        ip address 192.168.102.1 255.255.255.224
+        ip helper-address 192.168.102.67
+        exit
 
-    int vlan 130
-    ip address 192.168.102.33 255.255.255.224
-    ip helper-address 192.168.102.67
-    exit
+        int vlan 130
+        ip address 192.168.102.33 255.255.255.224
+        ip helper-address 192.168.102.67
+        exit
 
-    do wr
+        do wr
 
     6. PAT + Access Control List
+        int se0/2/0
+        ip nat outside
+        exit
+        int se0/2/1 
+        ip nat outside
+        exit
 
-    int se0/2/0
-    ip nat outside
-    exit
-    int se0/2/1 
-    ip nat outside
-    exit
+        int range gig0/0-2 
+        ip nat inside
+        exit
+        do wr
 
-    int range gig0/0-2 
-    ip nat inside
-    exit
-    do wr
-
-    ip nat inside source list 1 interface se0/2/0 overload
-    ip nat inside source list 1 interface se0/2/1 overload
-    access-list 1 permit 192.168.100.0 0.0.0.63
-    access-list 1 permit 192.168.100.64 0.0.0.63
-    access-list 1 permit 192.168.100.128 0.0.0.63
-    access-list 1 permit 192.168.100.192 0.0.0.63
-    access-list 1 permit 192.168.101.0 0.0.0.63
-    access-list 1 permit 192.168.101.64 0.0.0.63
+        ip nat inside source list 1 interface se0/2/0 overload
+        ip nat inside source list 1 interface se0/2/1 overload
+        access-list 1 permit 192.168.100.0 0.0.0.63
+        access-list 1 permit 192.168.100.64 0.0.0.63
+        access-list 1 permit 192.168.100.128 0.0.0.63
+        access-list 1 permit 192.168.100.192 0.0.0.63
+        access-list 1 permit 192.168.101.0 0.0.0.63
+        access-list 1 permit 192.168.101.64 0.0.0.63
 
     7. IPSEC VPN Tunnel
-    license boot module c2900 technology-package securityk9
+        license boot module c2900 technology-package securityk9
 
     ////////// HQ Route Aggregation //////////
 
-    (
-        192.168.100.0/26
-        192.168.100.64/26
-        192.168.100.128/26
-        192.168.100.192/26
-    )					— Summarised as 192.168.100.0/24
+        (
+            192.168.100.0/26
+            192.168.100.64/26
+            192.168.100.128/26
+            192.168.100.192/26
+        )					— Summarised as 192.168.100.0/24
 
-    (
-        192.168.101.0/26
-        192.168.101.64/26
-    )					— Summarised as 192.168.101.0/25
+        (
+            192.168.101.0/26
+            192.168.101.64/26
+        )					— Summarised as 192.168.101.0/25
 
     ///////// BR Route Aggregation /////////
 
-    (
-        192.168.101.128/27
-        192.168.101.160/27
-        192.168.101.192/27
-        192.168.101.224/27
-        192.168.102.0/27
-        192.168.102.32/27
-    )					— Summarised as 192.168.101.128/24
+        (
+            192.168.101.128/27
+            192.168.101.160/27
+            192.168.101.192/27
+            192.168.101.224/27
+            192.168.102.0/27
+            192.168.102.32/27
+        )					— Summarised as 192.168.101.128/24
 
     // For HQ Router
-    access-list 110 permit ip 192.168.100.0 0.0.0.255 192.168.101.128 0.0.0.255
-    access-list 110 permit ip 192.168.101.0 0.0.0.127 192.168.101.128 0.0.0.255
+        access-list 110 permit ip 192.168.100.0 0.0.0.255 192.168.101.128 0.0.0.255
+        access-list 110 permit ip 192.168.101.0 0.0.0.127 192.168.101.128 0.0.0.255
 
     // For BR Router
-    access-list 110 permit ip 192.168.101.128 0.0.0.255 192.168.100.0 0.0.0.255
-    access-list 110 permit ip 192.168.101.128 0.0.0.255 192.168.101.0 0.0.0.127
+        access-list 110 permit ip 192.168.101.128 0.0.0.255 192.168.100.0 0.0.0.255
+        access-list 110 permit ip 192.168.101.128 0.0.0.255 192.168.101.0 0.0.0.127
 
     // Key exchange on both the routers using (ISAKMP) Internet Security Association Key Management Protocol
     // For HQ-Router
-    crypto isakmp policy 10
-    encryption aes 256
-    authentication pre-share
-    group 5
-    exit
+        crypto isakmp policy 10
+        encryption aes 256
+        authentication pre-share
+        group 5
+        exit
 
-    crypto isakmp key SECRET123 address 192.168.102.98
-    do wr
+        crypto isakmp key SECRET123 address 192.168.102.98
+        do wr
 
-    crypto ipsec transform-set VPN-SET esp-aes esp-sha-hmac
-    crypto map VPN-MAP 10 ipsec-isakmp
-    description This VPN connects to Branch-Network.
-    set peer 192.168.102.98
-    set transform-set VPN-SET
-    match address 110
-    exit
+        crypto ipsec transform-set VPN-SET esp-aes esp-sha-hmac
+        crypto map VPN-MAP 10 ipsec-isakmp
+        description This VPN connects to Branch-Network.
+        set peer 192.168.102.98
+        set transform-set VPN-SET
+        match address 110
+        exit
 
-    int se0/3/0
-    crypto map VPN-MAP
-    exit
+        int se0/3/0
+        crypto map VPN-MAP
+        exit
 
-    do wr
+        do wr
 
-    do sh crypto ipsec sa
+        do sh crypto ipsec sa
 
     // For BR-Router
-    crypto isakmp policy 10
-    encryption aes 256
-    authentication pre-share
-    group 5
-    exit
+        crypto isakmp policy 10
+        encryption aes 256
+        authentication pre-share
+        group 5
+        exit
 
-    crypto isakmp key SECRET123 address 192.168.102.97
-    do wr
+        crypto isakmp key SECRET123 address 192.168.102.97
+        do wr
 
-    crypto ipsec transform-set VPN-SET esp-aes esp-sha-hmac
-    crypto map VPN-MAP 10 ipsec-isakmp
-    description This VPN connects to HeadQuarter-Network.
-    set peer 192.168.102.97
-    set transform-set VPN-SET
-    match address 110
-    exit
+        crypto ipsec transform-set VPN-SET esp-aes esp-sha-hmac
+        crypto map VPN-MAP 10 ipsec-isakmp
+        description This VPN connects to HeadQuarter-Network.
+        set peer 192.168.102.97
+        set transform-set VPN-SET
+        match address 110
+        exit
 
-    int se0/3/0
-    crypto map VPN-MAP
-    exit
+        int se0/3/0
+        crypto map VPN-MAP
+        exit
 
-    do wr
+        do wr
 
-    do sh crypto ipsec sa
+        do sh crypto ipsec sa
